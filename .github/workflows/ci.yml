@@ -1,0 +1,24 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  quilt-receipts:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        python-version: ["3.10", "3.12"]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python-version }}
+      - name: Install training-core deps
+        run: pip install regex numpy tqdm
+      - name: Quilt receipt tests
+        run: python tests/test_quilt_bpe.py
+      - name: Tiny training receipt (real merges, no network)
+        run: python examples/receipt_tiny_train.py --check
