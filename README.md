@@ -1,6 +1,25 @@
 # gpu_bpe
 the purpose of this guide is to demonstrate how to train a [Byte-Pair Encoding](https://en.wikipedia.org/wiki/Byte_pair_encoding) tokenizer at a scale that's actually useable thanks to GPUs. by "useable" what I mean is that 1) most guides on the internet (eg. [Karpathy's](https://www.youtube.com/watch?v=zduSFxRajkE&t=1431s)) run not only on the CPU but even worse in Python, meaning they're too slow to run on a large dataset and 2) you need a large dataset in order to avoid large documents biasing the distribution. the common practice I've observed is to just use pre-trained tokenizers but I prefer doing things from scratch as it 1) allows for experimentation at the tokenizer level and 2) ensures understanding. i have seen tokenizers built in faster languages such as [Rust](https://github.com/narensen/minbpe.rs) but I'm a GPU programmer not a Rust programmer and I'd bet GPUs are still much faster and capable of handling larger datasets for this task (somebody please fact check me on that). 
 
+## Quilt receipts (quilt-ecosystem adaptation)
+
+This fork adds `quilt_bpe/`: every merge decision a trainer commits —
+*given these statistics, admit this pair at this rank* — bookable as a
+hash-chained receipt in the quilt 5-opcode family envelope. BIND the corpus,
+EFFECT per merge (multi-GPU per-rank statistics preserved verbatim), VIEW
+the exported vocab, REFUSED rows for merge logs that lie. Receipts verify
+with `quilt_bpe.verify_chain`, which also verifies ledgers from the other
+`4quilt` forks — one chain recipe across the family.
+
+```bash
+python examples/receipt_tiny_train.py --check   # real training run, receipted
+python tests/test_quilt_bpe.py                  # 44 checks, no pytest needed
+```
+
+Full doctrine: [`docs/QUILT_BPE.md`](docs/QUILT_BPE.md). The CPU trainer
+accepts `merge_log=[...]` and the GPU scripts need the same small hook
+(not yet wired — no GPU where this was built).
+
 ## instructions
 the repo is split in to three parts. 
 `pip install -r requirements.txt`

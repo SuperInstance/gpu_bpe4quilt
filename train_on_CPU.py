@@ -5,15 +5,18 @@ https://github.com/openai/tiktoken/blob/main/tiktoken/_educational.py
 from __future__ import annotations
 import collections
 import regex
-import tiktoken
 import os
 import shutil
 import argparse
 import numpy as np
-from datasets import load_dataset
 from tqdm import tqdm
 import pickle
 from itertools import chain
+
+# Heavy demo-only dependencies are imported lazily inside the functions that
+# use them (tiktoken in from_tiktoken/save helpers, datasets in
+# fetch_fineweb_data) so the training core — including quilt merge-log
+# receipting — imports without the full demo stack installed.
 
 def visualise_tokens(token_values: list[bytes]) -> None:
     background = [f"\u001b[48;5;{i}m" for i in [167, 179, 185, 77, 80, 68, 134]]
@@ -122,6 +125,7 @@ class SimpleBytePairEncoding:
     @staticmethod
     def from_tiktoken(encoding):
         if isinstance(encoding, str):
+            import tiktoken
             encoding = tiktoken.get_encoding(encoding)
         return SimpleBytePairEncoding(
             pat_str=encoding._pat_str, mergeable_ranks=encoding._mergeable_ranks
@@ -182,7 +186,8 @@ def merge_ids(ids: list[list[int]], pair: tuple[int], idx: int):
 
 
 def bpe_train(
-    data: str, vocab_size: int, pat_str: str, demo: bool = False, k: int = 256
+    data: str, vocab_size: int, pat_str: str, demo: bool = False, k: int = 256,
+    merge_log: list | None = None,
 ) -> dict[bytes, int]:
     # First, add tokens for each individual byte value
     if vocab_size < 2**8:
@@ -222,6 +227,16 @@ def bpe_train(
         new_token_id = len(ranks)
         # Add the new token!
         ranks[token_bytes] = new_token_id
+
+        # Receipt the decision (quilt): which pair, how often, at what rank.
+        # Any script that books these events into quilt_bpe.MergeLedger gets a
+        # verifiable training provenance chain for free.
+        if merge_log is not None:
+            merge_log.append({
+                "new_token_id": new_token_id,
+                "pair": (best_bytes[0].hex(), best_bytes[1].hex()),
+                "count": int(stats[best_pair]),
+            })
 
         # Now merge that most common pair in all the words
         ids = merge_ids(ids, best_pair, new_token_id)
@@ -288,6 +303,7 @@ def fetch_fineweb_data(max_chars: int):
     local_data_path = os.path.join(data_dir, new_file_name)
     print(f"Downloading FineWeb data to {local_data_path}...")
 
+    from datasets import load_dataset
     dataset = load_dataset("HuggingFaceFW/fineweb",
                             name="sample-10BT",
                             split="train",
@@ -376,6 +392,7 @@ def save_tokenizer(enc, vocab_size, sample_size):
 
 def load_tokenizer(tokenizer_path):
     """this function can be imported by other .py files to use this tokenizer"""
+    import tiktoken
     tokenizer_config = pickle.load(open(tokenizer_path, 'rb'))
     enc = tiktoken.Encoding(
         name=tokenizer_path.split('/')[-1][:-4], # Use filename without extension as name

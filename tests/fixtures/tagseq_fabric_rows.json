@@ -1,0 +1,82 @@
+[
+ {
+  "tick": 1,
+  "ts": 1000.0,
+  "op": "BIND",
+  "actor": "fixture",
+  "fabric_state": "d01933c8e769e73cf372396e79a8ba3df751b5cd8fc639fc9ef8ef932808a25b",
+  "payload": {
+   "kind": "fabric",
+   "digest": {
+    "cells": 2,
+    "rounds": 0,
+    "state_hash": "d01933c8e769e73cf372396e79a8ba3df751b5cd8fc639fc9ef8ef932808a25b",
+    "policy": {
+     "energy_scale": 1024,
+     "survive_min": 256,
+     "grant_min": 256,
+     "diffusion_damp": 8
+    }
+   },
+   "cells": {
+    "A": {
+     "address": [
+      0,
+      0
+     ],
+     "energy": 512,
+     "content_hash": "d7c03742bcc53db2cd27d7b3b450512fe1b1c9a20cbede983f4d510f99b070f2"
+    },
+    "B": {
+     "address": [
+      1,
+      0
+     ],
+     "energy": 512,
+     "content_hash": "a9c05f81ad84ee0cf04fc7fdb9078afa23f8f1b83c6b44d3d7b7ab6e4baf5b6b"
+    }
+   }
+  },
+  "chain_prev": "00000000",
+  "row_hash": "bc2ec5e4"
+ },
+ {
+  "tick": 2,
+  "ts": 1000.0,
+  "op": "TICK",
+  "actor": "fixture",
+  "fabric_state": "d01933c8e769e73cf372396e79a8ba3df751b5cd8fc639fc9ef8ef932808a25b",
+  "payload": {
+   "kind": "pack",
+   "sequence": [
+    "A",
+    "B"
+   ],
+   "pack_hash": "b64e3448a83a5b86466465080361c1a7e1157a27ddccd4b68069cb18caffb74a",
+   "grants": 1
+  },
+  "chain_prev": "bc2ec5e4",
+  "row_hash": "98fb917d"
+ },
+ {
+  "tick": 3,
+  "ts": 1000.0,
+  "op": "LINK",
+  "actor": "fixture",
+  "fabric_state": "d01933c8e769e73cf372396e79a8ba3df751b5cd8fc639fc9ef8ef932808a25b",
+  "payload": {
+   "kind": "pack-grants",
+   "pack": "98fb917d",
+   "edges": [
+    {
+     "src": "A",
+     "dst": "B",
+     "src_pos": 0,
+     "link_pos": 0
+    }
+   ]
+  },
+  "chain_prev": "98fb917d",
+  "row_hash": "2f218c68"
+ }
+]
