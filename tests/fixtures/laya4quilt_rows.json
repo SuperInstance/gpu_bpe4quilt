@@ -1,0 +1,23 @@
+[
+ {
+  "tick": 1,
+  "ts": 1790033933.553914,
+  "op": "BIND",
+  "actor": "fixture",
+  "engine": "a",
+  "payload": {
+   "state_hash": "043a718774c572bd8a25adbeb1bfcd5c0256ae11cecf9f9c3f925d0e52beaf89",
+   "questions_hash": "58551e44c2d8cf7635b5c48b81c0e0edf312f5b92c7d67ff94472ac4cccdd951",
+   "engine_model": "fixture@0",
+   "answers": {
+    "q1": {
+     "choice": "x",
+     "type": "choice"
+    }
+   },
+   "usage": {}
+  },
+  "chain_prev": "00000000",
+  "row_hash": "434de42d"
+ }
+]
